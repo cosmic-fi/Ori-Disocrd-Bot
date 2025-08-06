@@ -1,0 +1,27 @@
+{
+  "name": "ori-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot featuring music playback, queue management, and basic server commands",
+  "main": "bot.js",
+  "scripts": {
+    "start": "npm run deploy && node bot.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.17.0",
+    "@distube/ytdl-core": "^4.16.12",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.15",
+    "opusscript": "^0.0.8",
+    "yt-search": "^2.10.4"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "music"
+  ],
+  "author": "Cosmic-fi",
+  "license": "MIT"
+}
