@@ -1,5 +1,5 @@
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
-const ytdl = require('@distube/ytdl-core');
+const { stream } = require('play-dl');
 
 class MusicPlayer {
     constructor(queue) {
@@ -18,12 +18,15 @@ class MusicPlayer {
         }
 
         try {
-            const stream = ytdl(song.url, { 
-                filter: 'audioonly', 
-                highWaterMark: 1 << 25,
-                quality: 'highestaudio'
+            // Use play-dl's stream function
+            const streamData = await stream(song.url, {
+                quality: 2 // 0 = lowest, 1 = medium, 2 = highest
             });
-            const resource = createAudioResource(stream, { inlineVolume: true });
+            
+            const resource = createAudioResource(streamData.stream, { 
+                inputType: streamData.type,
+                inlineVolume: true 
+            });
             
             if (resource.volume) {
                 resource.volume.setVolume(serverQueue.volume);

@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer } = require('@discordjs/voice');
-const ytdl = require('@distube/ytdl-core');
-const ytSearch = require('yt-search');
+const { search, video_basic_info } = require('play-dl');
 const MusicQueue = require('../../utils/musicQueue');
 const MusicPlayer = require('../../utils/musicPlayer');
 const { formatDuration } = require('../../utils/formatters');

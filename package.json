@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
-    "@distube/ytdl-core": "^4.16.12",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.15",
     "opusscript": "^0.0.8",
+    "play-dl": "^1.9.7",
     "tweetnacl": "^1.0.3",
     "yt-search": "^2.10.4"
   },
