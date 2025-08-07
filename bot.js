@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const CommandHandler = require('./src/handlers/commandHandler');
 require('dotenv').config();
 
@@ -29,7 +30,7 @@ for (const file of eventFiles) {
     const event = require(filePath);
     
     if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
+        client.once(event.name, (...args) => event.execute(...args, commandHandler, queue));
     } else {
         client.on(event.name, (...args) => event.execute(...args, commandHandler, queue));
     }
@@ -37,5 +38,26 @@ for (const file of eventFiles) {
     console.log(`✅ Loaded event: ${event.name}`);
 }
 
-// Login
+// Create HTTP server for Render health checks
+const server = http.createServer((req, res) => {
+    if (req.url === '/health' || req.url === '/') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+            status: 'online', 
+            bot: client.user ? client.user.tag : 'Not logged in',
+            uptime: process.uptime(),
+            timestamp: new Date().toISOString()
+        }));
+    } else {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+    }
+});
+
+// Start HTTP server on Render's assigned port
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`🌐 HTTP server running on port ${PORT}`);
+});
+
 client.login(process.env.DISCORD_TOKEN);
