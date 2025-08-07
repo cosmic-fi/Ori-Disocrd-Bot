@@ -18,16 +18,23 @@ module.exports = {
     
     async execute(interaction, queue) {
         // Defer immediately to prevent timeout
-        await interaction.deferReply();
+        try {
+            if (!interaction.replied && !interaction.deferred) {
+                await interaction.deferReply();
+            }
+        } catch (deferError) {
+            console.error('Failed to defer reply:', deferError.message);
+            // If defer fails, we need to use reply() instead of editReply()
+        }
         
         const voiceChannel = interaction.member.voice.channel;
         if (!voiceChannel) {
-            return interaction.editReply('❌ You need to be in a voice channel to play music!');
+            return this.sendResponse(interaction, '❌ You need to be in a voice channel to play music!');
         }
 
         const permissions = voiceChannel.permissionsFor(interaction.client.user);
         if (!permissions.has('Connect') || !permissions.has('Speak')) {
-            return interaction.editReply('❌ I need permissions to join and speak in your voice channel!');
+            return this.sendResponse(interaction, '❌ I need permissions to join and speak in your voice channel!');
         }
 
         const query = interaction.options.getString('song');
@@ -123,6 +130,17 @@ module.exports = {
         } catch (error) {
             console.error(error);
             return interaction.editReply('❌ There was an error playing this song!');
+        }
+    },
+    sendResponse(interaction, content) {
+        try {
+            if (interaction.deferred && !interaction.replied) {
+                return interaction.editReply(content);
+            } else if (!interaction.replied && !interaction.deferred) {
+                return interaction.reply(content);
+            }
+        } catch (error) {
+            console.error('Failed to send response:', error.message);
         }
     }
 };
